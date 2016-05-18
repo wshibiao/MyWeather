@@ -1,0 +1,39 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked. -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="auto_update_weather"
+        android:summaryOn="@string/summary_on"
+        android:summaryOff="@string/summary_off"
+        android:title="@string/auto_update_weather" />
+    <ListPreference
+        android:defaultValue="180"
+        android:key="update_frequency"
+        android:entries="@array/pref_sync_frequency_titles"
+        android:entryValues="@array/pref_sync_frequency_values"
+        android:dependency="auto_update_weather"
+        android:title="@string/auto_update_weather_frequency"/>
+
+    <!-- Allows the user to choose a ringtone in the 'notification' category. -->
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+    <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="GPS_switch"
+        android:title="@string/pref_title_GPS"
+        android:summaryOn="@string/summary_on"
+        android:summaryOff="@string/summary_off"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="Notification"
+        android:title="@string/pref_title_Notifications"
+        android:summaryOn="@string/summary_on"
+        android:summaryOff="@string/summary_off"/>
+    <Preference
+        android:key="clear_cache"
+        android:title="清理缓存"/>
+</PreferenceScreen>

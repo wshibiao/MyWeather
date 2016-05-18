@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".choosecity.ChooseCityActivity">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:popupTheme="@style/Theme.AppCompat.Light"
+            android:theme="@style/Theme.Design.NoActionBar"/>
+
+    </android.support.design.widget.AppBarLayout>
+   <android.support.design.widget.CoordinatorLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+       <FrameLayout
+           android:id="@+id/frame_city"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"/>
+   </android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

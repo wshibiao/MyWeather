@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <com.wshibiao.myweather.customview.CityEditText
+        android:id="@+id/edit_city"
+        android:background="@android:drawable/edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:inputType="text"
+        android:hint="输入城市名"
+        />
+    <include layout="@layout/hot_city"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/city_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <!--<ViewStub-->
+        <!--android:id="@+id/view_sub"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout="@layout/hot_city"/>-->
+</LinearLayout>

@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">一直在测试</string>
+    <!--weather-->
+    <string name="default_text">__</string>
+    <string name="today">今天</string>
+    <string name="pm">PM2.5</string>
+    <string name="forecast">预报</string>
+    <string name="information">详细信息</string>
+    <string name="felt_air_temp">体感温度</string>
+    <string name="exercise_index">晨练指数</string>
+    <string name="travel_index">旅游指数</string>
+    <string name="wash_index">洗车指数</string>
+    <string name="drying">干燥指数</string>
+    <string name="comfort">舒适指数</string>
+    <string name="humidity">湿度</string>
+    <string name="wind">风向风力</string>
+    <string name="uv_index">紫外线强度</string>
+    <string name="dressing_advice">穿衣建议</string>
+    <string name="dressing_index">穿衣指数</string>
+    <string name="title_city">城市选择</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_weather_detail">WeatherDetailActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!--
+        SettingsActivity 相关
+    -->
+    <string name="pref_header_about">关于</string>
+    <string name="pref_header_settings">设置</string>
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 分钟</item>
+        <item>30 分钟</item>
+        <item>1 小时</item>
+        <item>3 小时</item>
+        <item>6 小时</item>
+    </string-array>
+
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="summary_on">开启</string>
+    <string name="summary_off">关闭</string>
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <string name="auto_update_weather">自动更新</string>
+    <string name="auto_update_weather_frequency">自动更新频率</string>
+    <string name="pref_title_GPS">GPS定位</string>
+    <string name="pref_title_Notifications">通知栏常驻</string>
+
+
+</resources>
