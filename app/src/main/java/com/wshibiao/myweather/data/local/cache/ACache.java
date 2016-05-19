@@ -23,6 +23,8 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.wshibiao.myweather.base.BaseApplication;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,8 +53,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.wshibiao.myweather.base.BaseApplication;
-
 /**
  * @author Michael Yang（www.yangfuhai.com） update at 2013.08.07
  */
@@ -65,7 +65,7 @@ public class ACache {
 	private ACacheManager mCache;
 
 	public static ACache get(Context ctx) {
-		return get(ctx, "data");
+		return get(ctx, "temp");
 	}
 
 	public static ACache get(Context ctx, String cacheName) {

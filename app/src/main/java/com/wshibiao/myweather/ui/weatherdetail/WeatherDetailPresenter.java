@@ -79,58 +79,21 @@ public class
     public void getCache() {
         WeatherInfo weatherInfo = null;
         try {
-
             weatherInfo = (WeatherInfo) aCache.getAsObject("weather_temp");
-            Log.d(TAG, "getCache: weatherinfo"+weatherInfo.result.sk.windDirection);
+            Log.d(TAG, "getCache: weatherInfo"+weatherInfo.result.sk.windDirection);
         } catch (Exception e) {
             Log.e("CacheError aa", e.toString());
         }
 
         if (weatherInfo != null) {
-
             Log.d(TAG, "getCache: not null");
-            mView.progressBarGone();
             mView.showWeather(weatherInfo);
 
-//        } else {
-//            mView.errorNetSnackbar();
-//        }
+        } else {
+            mView.errorNetSnackbar();
         }
     }
 
-//    @Override
-//    public  Observable<WeatherInfo> getWeather(String cityName){
-//
-//        //从缓存或者内存卡取
-//        Observable<WeatherInfo> memory = Observable.create(new Observable.OnSubscribe<WeatherInfo>() {
-//            @Override
-//            public void call(Subscriber<? super WeatherInfo> subscriber) {
-//                WeatherInfo weatherInfo=(WeatherInfo)aCache.getAsObject("weather_temp");
-//                if (weatherInfo!=null) {
-//                    subscriber.onNext(weatherInfo);
-//                } else {
-//                    subscriber.onCompleted();
-//                }
-//            }
-//        });
-//
-//
-//        //请求网络获取天气信息
-//        Observable<WeatherInfo> network = NetWork.getWeatherApi()
-//                .getWeatherInfo("2", cityName, KEY);
-////                .doOnNext(new Action1<WeatherInfo>() {
-////                    @Override
-////                    public void call(WeatherInfo weatherInfo) {
-////                      mCache.put("weather_temp",weatherInfo,1000 * 60 * 60);
-////                    }
-////                });
-//
-//
-//        return Observable.concat(memory,  network)
-//                .first()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
@@ -165,7 +128,6 @@ public class
                             }
                         });
                 Log.d(TAG, "onLocationChanged: location"+aMapLocation.getLongitude());
-                Log.d(TAG, "onLocationChanged: loc2 "+aMapLocation.getLatitude());
             }else {
                 Log.e(TAG, "onLocationChanged:ErrorCode "+aMapLocation.getErrorCode());
             }

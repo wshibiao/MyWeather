@@ -2,26 +2,25 @@ package com.wshibiao.myweather.ui.weatherdetail;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wshibiao.myweather.R;
 import com.wshibiao.myweather.base.BaseActivity;
 import com.wshibiao.myweather.base.BaseFragment;
 import com.wshibiao.myweather.base.RxBus;
 import com.wshibiao.myweather.data.AutoUpdateWeatherService;
 import com.wshibiao.myweather.data.bean.WeatherInfo;
 import com.wshibiao.myweather.ui.choosecity.ChooseCityFragment;
-import com.wshibiao.myweather.ui.preferences.Settings;
 import com.wshibiao.myweather.util.Utility;
 
 import java.util.concurrent.TimeUnit;
@@ -32,37 +31,58 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-
-public class WeatherDetailFragment extends BaseFragment implements WeatherDetailContract.View,SwipeRefreshLayout.OnRefreshListener {
-
+/**
+ * Created by wsb on 2016/5/18.
+ */
+public class WeatherDetailFragment extends BaseFragment implements WeatherDetailContract.View,SwipeRefreshLayout.OnRefreshListener{
     private static final String TAG = "WeatherDetailFragment";
-    //    @Bind(R.id.my_refresh)
-//    SwipeRefreshLayout myRefresh;
-    @Bind(com.wshibiao.myweather.R.id.list)
-    RecyclerView recycler;
-    @Bind(com.wshibiao.myweather.R.id.progressBar)
-    ProgressBar progressBar;
-    @Bind(com.wshibiao.myweather.R.id.iv_erro)
-    TextView ivErro;
-    @Bind(com.wshibiao.myweather.R.id.refresh)
-    SwipeRefreshLayout refresh;
-    private SharedPreferences mPrefs;
-    private WeatherDetailContract.Presenter presenter;
-    private WeatherInfo weatherInfo = new WeatherInfo();
-    private WeatherDetailAdapter mAdapter;
-    private RxBus _rxBus;
+    @Bind(R.id.time)
+    TextView time;
+    @Bind(R.id.cityName)
+    TextView cityName;
+    @Bind(R.id.weather)
+    TextView weather;
+    @Bind(R.id.temperature)
+    TextView temperature;
+    @Bind(R.id.week)
+    TextView week;
+    @Bind(R.id.today)
+    TextView today;
+    @Bind(R.id.temp_range)
+    TextView tempRange;
+    @Bind(R.id.id_gallery)
+    LinearLayout idGallery;
+    @Bind(R.id.future_listview)
+    ListView futureListview;
+    @Bind(R.id.tv_felt_air_temp)
+    TextView tvFeltAirTemp;
+    @Bind(R.id.tv_humidity)
+    TextView tvHumidity;
+    @Bind(R.id.tv_drying_index)
+    TextView tvDryingIndex;
+    @Bind(R.id.tv_wind)
+    TextView tvWind;
+    @Bind(R.id.tv_uv_index)
+    TextView tvUvIndex;
+    @Bind(R.id.comfortable)
+    TextView comfortable;
+    @Bind(R.id.tv_dressing_index)
+    TextView tvDressingIndex;
+    @Bind(R.id.tv_dressing_advice_index)
+    TextView tvDressingAdviceIndex;
+    @Bind(R.id.tv_wash_index)
+    TextView tvWashIndex;
+    @Bind(R.id.tv_travel_index)
+    TextView tvTravelIndex;
+    @Bind(R.id.tv_exercise_index)
+    TextView tv5Index;
+    @Bind(R.id.weather_layout)
+    LinearLayout weatherLayout;
+
+    private SwipeRefreshLayout refresh;
     private CompositeSubscription _subscriptions;
-
-    public WeatherDetailFragment() {
-        // Required empty public constructor
-    }
-
-
-    @Override
-    public void setPresenter(WeatherDetailContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
+    private WeatherDetailContract.Presenter presenter;
+    private RxBus _rxBus;
 
     public static WeatherDetailFragment newInstance() {
         WeatherDetailFragment fragment = new WeatherDetailFragment();
@@ -70,34 +90,19 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
         return fragment;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mActivity=(Activity)context;
-    }
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new WeatherDetailAdapter(mActivity, weatherInfo);
-//        _rxBus=((BaseActivity)getActivity()).getRxBusSingleton();
+    public WeatherDetailFragment() {
+
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(com.wshibiao.myweather.R.layout.fragment_act1, container, false);
-        ButterKnife.bind(this, view);
-        _rxBus = BaseActivity.getRxBusSingleton();
-        mPrefs = mActivity.getSharedPreferences("weather_city", Context.MODE_PRIVATE);
-        weatherInfo = new WeatherInfo();
-        refresh.setOnRefreshListener(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.weather_detail_fragment, container, false);
+        refresh=(SwipeRefreshLayout) view.findViewById(R.id.my_refresh);
         refresh.setSize(SwipeRefreshLayout.LARGE);
-        presenter.start();
-        mAdapter = new WeatherDetailAdapter(mActivity, weatherInfo);
-        initRecyclerView();
-
+        refresh.setOnRefreshListener(this);
+      presenter.start();
         if (Utility.isNetworkConnected(mActivity)) {
             if (BaseActivity.preferences.getBoolean("GPS_switch", true)) {
                 Log.d(TAG, "onCreateView: by gps");
@@ -112,81 +117,18 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
             Log.d(TAG, "onCreateView: by cache");
             presenter.getCache();
         }
-
+        ButterKnife.bind(this, view);
         return view;
-    }
-
-    @Override
-    public void errorNetSnackbar() {
-        Snackbar.make(recycler, "网络不好,~( ´•︵•` )~", Snackbar.LENGTH_INDEFINITE).setAction("重试", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getWeatherByCityName(mPrefs.getString(Settings.CITY, "海口"));
-            }
-        }).show();
-
-    }
-
-
-    public void initRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
-        recycler.setLayoutManager(linearLayoutManager);
-        recycler.setHasFixedSize(true);
-        recycler.setAdapter(mAdapter);
-    }
-
-
-
-    @Override
-    public void onRefresh() {
-        refresh.setRefreshing(false);
-        Observable.timer(10, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
-            @Override
-            public void call(Long aLong) {
-                presenter.getWeatherByCityName(BaseActivity.settings.getCity());
-            }
-        });
-
-    }
-
-
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: weatherFragment");
 
 
     }
 
     @Override
-    public void showWeather(WeatherInfo weather) {
-        weatherInfo.result = weather.result;
-        weatherInfo.result.sk = weather.result.sk;
-        weatherInfo.result.future = weather.result.future;
-        weatherInfo.result.today = weather.result.today;
-        mAdapter.notifyDataSetChanged();
-        BaseActivity.settings.setCity(weatherInfo.result.today.city);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
+        _rxBus=((BaseActivity)mActivity).getRxBusSingleton();
     }
-
-    @Override
-    public void progressBarVisible() {
-        Log.d(TAG, "progressBarVisible: called");
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressBarGone();
-            }
-        }, 5000);
-
-    }
-    @Override
-    public void progressBarGone() {
-        progressBar.setVisibility(View.GONE);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -226,16 +168,70 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onRefresh() {
+        refresh.setRefreshing(false);
+        Observable.timer(10, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                presenter.getWeatherByCityName(BaseActivity.settings.getCity());
+                if (_rxBus.hasObservers()) {
+                    _rxBus.send(new ReplaceBg());
+                }
+            }
+        });
+
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        _subscriptions.clear();
+    public void errorNetSnackbar() {
+        Snackbar.make(refresh, "无网络", Snackbar.LENGTH_INDEFINITE).setAction("重试", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getWeatherByCityName(BaseActivity.settings.getCity());
+            }
+        });
+    }
+
+    public synchronized  void handleTodayWeatherResponse(WeatherInfo weather) {
+        BaseActivity.settings.setCity(weather.result.today.city);
+        cityName.setText(weather.result.today.city);
+        Log.d("onBindViewHolder", weather.result.sk.temp + "hahah");
+        temperature.setText(weather.result.sk.temp);
+        time.setText(weather.result.sk.time + "更新");
+
+
+    }
+
+
+    @Override
+    public void showWeather(WeatherInfo weatherInfo) {
+        Log.d(TAG, "showWeather: ");
+        handleTodayWeatherResponse(weatherInfo);
+    }
+
+    @Override
+    public void progressBarVisible() {
+
+    }
+
+    @Override
+    public void progressBarGone() {
+
+    }
+
+    @Override
+    public void setPresenter(WeatherDetailContract.Presenter presenter) {
+        this.presenter=presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         ButterKnife.unbind(this);
     }
 
 
+    public static class ReplaceBg{
+
+    }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">一直在测试</string>
+    <string name="app_name">一直在测试1.0</string>
     <!--weather-->
     <string name="default_text">__</string>
     <string name="today">今天</string>
