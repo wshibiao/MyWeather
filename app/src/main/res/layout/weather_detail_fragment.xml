@@ -1,21 +1,379 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/my_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.weatherdetail.WeatherDetailActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingTop="210dp"
+        android:clipToPadding="false"
         >
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
+        <LinearLayout
+            android:id="@+id/weather_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="210dp"
-            android:clipToPadding="false" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-    <include layout="@layout/progressbar"/>
-</RelativeLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/temperature"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_text"
+                    android:textColor="#ffffff"
+                    android:textSize="40sp"/>
+                <TextView
+                    android:id="@+id/weather"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_text"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="haha"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:id="@+id/week"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/default_text" />
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:id="@+id/today"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="left"
+                    android:text="今天"/>
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:id="@+id/temp_range"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@string/default_text"/>
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <HorizontalScrollView
+                android:layout_marginTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:scrollbars="none" >
+                <LinearLayout
+                    android:id="@+id/id_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal" >
+                </LinearLayout>
+            </HorizontalScrollView>
+            <include layout="@layout/divider"/>
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/future_recycler_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="280dp"-->
+                <!--android:clipToPadding="false"-->
+            <!--/>-->
+            <FrameLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="280dp">
+                <LinearLayout
+                    android:id="@+id/forecast7"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+            <!--<ListView-->
+                <!--android:id="@+id/future_list_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="240dp">-->
+            <!--</ListView>-->
+
+            <include layout="@layout/divider"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical" >
+
+                <include layout="@layout/item_textview"
+                    android:text="@string/information"/>
+                <!--<TextView-->
+                    <!--style="@style/TextViewStyle"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="4dp"-->
+                    <!--android:text="@string/information"-->
+                    <!--android:textColor="@color/dark_grey" />-->
+
+                <include layout="@layout/divider"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/felt_air_temp" />
+
+                    <TextView
+                        android:id="@+id/tv_felt_air_temp"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="@string/humidity" />
+
+                    <TextView
+                        android:id="@+id/tv_humidity"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingStart="16dp"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/drying" />
+                    <TextView
+                        android:id="@+id/tv_drying_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingRight="50dp"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/wind" />
+
+                    <TextView
+                        android:id="@+id/tv_wind"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/uv_index" />
+
+                    <TextView
+                        android:id="@+id/tv_uv_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/comfort" />
+
+                    <TextView
+                        android:id="@+id/comfortable"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/dressing_index" />
+
+                    <TextView
+                        android:id="@+id/tv_dressing_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="start"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/dressing_advice" />
+
+                    <TextView
+                        android:id="@+id/tv_dressing_advice_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingRight="50dp"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/wash_index" />
+                    <TextView
+                        android:id="@+id/tv_wash_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/travel_index" />
+                    <TextView
+                        android:id="@+id/tv_travel_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        android:paddingLeft="16dp"
+                        android:text="@string/exercise_index" />
+                    <TextView
+                        android:id="@+id/tv_exercise_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="start"
+                        />
+                </LinearLayout>
+                <include layout="@layout/divider"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp" >
+
+                    <TextView
+                        style="@style/TextViewStyle"
+                        android:gravity="start"
+                        android:paddingLeft="16dp"
+                        android:text="@string/pm" />
+                    <TextView
+                        android:id="@+id/tv_pm2.5_index"
+                        style="@style/TextViewStyle"
+                        android:gravity="left"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

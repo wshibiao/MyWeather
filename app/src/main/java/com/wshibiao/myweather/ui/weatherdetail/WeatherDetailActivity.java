@@ -1,11 +1,10 @@
 package com.wshibiao.myweather.ui.weatherdetail;
 
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,11 +29,12 @@ import com.wshibiao.myweather.base.BaseActivity;
 import com.wshibiao.myweather.base.RxBus;
 import com.wshibiao.myweather.data.AutoUpdateWeatherService;
 import com.wshibiao.myweather.data.bean.BusProvider;
-import com.wshibiao.myweather.data.local.cache.ACache;
 import com.wshibiao.myweather.ui.choosecity.ChooseCityActivity;
 import com.wshibiao.myweather.ui.choosecity.ChooseCityFragment;
 import com.wshibiao.myweather.ui.preferences.settings.SettingsActivity;
 import com.wshibiao.myweather.util.ActivityUtils;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,9 +47,6 @@ public class WeatherDetailActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "WeatherDetailActivity";
 
-//    @Bind(R.id.frame_weather)
-//    FrameLayout frameWeather;
-
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.collapsing_toolbar_layout)
@@ -58,20 +55,15 @@ public class WeatherDetailActivity extends BaseActivity
     FloatingActionButton fab;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    //    @Bind(R.id.my_refresh)
-//    SwipeRefreshLayout myRefresh;
-
     @Bind(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
     @Bind(R.id.nav_view)
     NavigationView navView;
 
-    private WeatherDetailPresenter presenter;
+    private WeatherDetailContract.Presenter presenter;
     private CompositeSubscription _subscriptions;
     private RxBus _rxBus;
-    private String cityName;
-    private SharedPreferences mPrefs;
-    private ACache mCache;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +76,17 @@ public class WeatherDetailActivity extends BaseActivity
         Log.d(TAG, "WeatherActivity onCreate: " + getCacheDir() + "/ACache");
         Log.d(TAG, "WeatherActivity onCreate: " + getExternalCacheDir() + "/ACache");
         Glide.with(this).load(R.drawable.sun0);
-
-        coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.sun0));
-        Log.d(TAG, "onCreate: "+System.currentTimeMillis());
-        collapsingToolbarLayout.setTitle(BaseActivity.settings.getCity());
+        collapsingToolbarLayout.setTitle(" ");
+        coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.sun3));
+        Log.d(TAG, "onCreate: " + System.currentTimeMillis());
+        Observable.timer(3000, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                collapsingToolbarLayout.setTitle(BaseActivity.settings.getCity());
+            }
+        });
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);//设置还没收缩时状态下字体颜色
+//        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.GREEN);//设置收缩后Toolbar上字体的颜色
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,12 +109,9 @@ public class WeatherDetailActivity extends BaseActivity
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
-//        myRefresh.setSize(SwipeRefreshLayout.LARGE);
-//        myRefresh.setOnRefreshListener(this);
 
         navView.setNavigationItemSelectedListener(this);
 
-        mPrefs = getSharedPreferences("weather_city", Context.MODE_PRIVATE);
         WeatherDetailFragment weatherDetailFragment = (WeatherDetailFragment) getSupportFragmentManager().findFragmentById(R.id.frame);
         if (weatherDetailFragment == null) {
             // Create the fragment
@@ -127,7 +123,6 @@ public class WeatherDetailActivity extends BaseActivity
 
         _rxBus = BaseActivity.getRxBusSingleton();
 //        processExtraData();
-        cityName = getIntent().getStringExtra("temp");
 
         if (BaseActivity.preferences.getBoolean("auto_update_weather", true)) {
             startService(new Intent(WeatherDetailActivity.this, AutoUpdateWeatherService.class));
@@ -159,23 +154,6 @@ public class WeatherDetailActivity extends BaseActivity
 
     }
 
-
-//    @Subscribe
-//    public void getCityEvent(CityEvent event) {
-//        cityName = event.msg;
-//        presenter.getWeatherByCityName(event.msg);
-//
-//    }
-
-//    @Override
-//    public void onRefresh() {
-//        myRefresh.setRefreshing(false);
-//        String name=mPrefs.getString("cityName", "海口");
-//        presenter.getWeatherByCityName(name);
-//
-//    }
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -185,9 +163,15 @@ public class WeatherDetailActivity extends BaseActivity
         _subscriptions//
                 .add(updateEvent.subscribe(new Action1<Object>() {
                     @Override
-                    public void call(Object event) {
+                    public void call(final Object event) {
                         if (event instanceof ChooseCityFragment.CityEvent) {
-                            collapsingToolbarLayout.setTitle(((ChooseCityFragment.CityEvent) event).msg);
+                            Observable.timer(3000, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+                                @Override
+                                public void call(Long aLong) {
+                                    collapsingToolbarLayout.setTitle(((ChooseCityFragment.CityEvent) event).msg);
+                                }
+                            });
+
                         }
                     }
                 }));
@@ -206,13 +190,6 @@ public class WeatherDetailActivity extends BaseActivity
     }
 
 
-
-    public void replaceBg(){
-        Log.d(TAG, "replaceBg: called");
-        coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.rain_day));
-
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -222,21 +199,21 @@ public class WeatherDetailActivity extends BaseActivity
             super.onBackPressed();
         }
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);//must store the new intent unless getIntent() will return the old one
-        processExtraData();
-    }
-
-    private void processExtraData() {
-
-        Intent intent = getIntent();
-
-        //use the data received here
-
-    }
+//
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        setIntent(intent);//must store the new intent unless getIntent() will return the old one
+//        processExtraData();
+//    }
+//
+//    private void processExtraData() {
+//
+//        Intent intent = getIntent();
+//
+//        //use the data received here
+//
+//    }
 
 
     @Override

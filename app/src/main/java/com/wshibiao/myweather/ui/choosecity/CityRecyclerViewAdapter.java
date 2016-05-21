@@ -19,64 +19,8 @@ import java.util.List;
  * Created by wsb on 2016/4/26.
  */
 public class CityRecyclerViewAdapter extends RecyclerView.Adapter<CityRecyclerViewAdapter.MyViewHolder> {
-//    private onRecyclerViewItemClickListener listener;
-//    private List<City> cityList;
-//
-//    public CityRecyclerViewAdapter(List<City> cityList) {
-//
-//        this.cityList=(cityList!=null?cityList:new ArrayList<City>());
-//    }
-//
-//
-//    @Override
-//    public void onBindViewHolder(MyViewHolder holder, final int position) {
-//        City city=cityList.get(position);
-//        holder.city.setText(city.getCity()+"-");
-//        holder.district.setText(city.getDistrict());
-//        holder.province.setText(city.getProvince() + "-");
-//        holder.cardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                listener.onItemClick(v,position);
-//            }
-//        });
-//
-//    }
-//
-//    public class MyViewHolder extends RecyclerView.ViewHolder{
-//        private CardView cardView;
-//        private TextView province;
-//        private TextView city;
-//        private TextView district;
-//        public MyViewHolder(View view){
-//            super(view);
-//            cardView=(CardView)view.findViewById(R.id.cardView);
-//            province=(TextView)view.findViewById(R.id.province);
-//            city=(TextView)view.findViewById(R.id.city);
-//            district=(TextView)view.findViewById(R.id.district);
-//        }
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//       return cityList.size();
-//    }
-//
-//    @Override
-//    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item_city,null);
-//        MyViewHolder vh=new MyViewHolder(view);
-//        return vh;
-//    }
-//
-//    public interface onRecyclerViewItemClickListener{
-//        void onItemClick(View view,int position);
-//    }
-//
-//    public void setOnItemClickListener(onRecyclerViewItemClickListener listener){
-//        this.listener=listener;
-//    }
-private OnRecyclerViewItemClickListener mOnItemClickListener;
+
+    private OnRecyclerViewItemClickListener mOnItemClickListener;
     private List<City> dataset;
     private Context mContext;
 

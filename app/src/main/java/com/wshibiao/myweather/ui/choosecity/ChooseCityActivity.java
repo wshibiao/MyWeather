@@ -28,7 +28,7 @@ public class ChooseCityActivity extends BaseActivity {
     @Bind(R.id.frame_city)
     FrameLayout frame;
 
-    private ChooseCityPresenter presenter;
+    private ChooseCityContract.Presenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +69,7 @@ public class ChooseCityActivity extends BaseActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         getWindow().setEnterTransition(new Explode());
         getWindow().setExitTransition(new Explode());
-//        BusProvider.getBusInstance().post(new CityEvent("海口"));
+
 
     }
 

@@ -3,11 +3,9 @@ package com.wshibiao.myweather.ui.choosecity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -16,26 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.wshibiao.myweather.R;
 import com.wshibiao.myweather.base.BaseActivity;
 import com.wshibiao.myweather.base.BaseFragment;
 import com.wshibiao.myweather.base.RxBus;
-import com.wshibiao.myweather.customview.CityEditText;
 import com.wshibiao.myweather.data.bean.City;
 import com.wshibiao.myweather.ui.weatherdetail.WeatherDetailActivity;
+import com.wshibiao.myweather.widget.CityEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by wsb on 2016/4/26.
@@ -43,24 +37,16 @@ import rx.subscriptions.CompositeSubscription;
 public class ChooseCityFragment extends BaseFragment implements ChooseCityContract.View {
     //    @Bind(R.id.edit_city)
     private CityEditText editCity;
-    //    @Bind(R.id.gv_remen)
-//    MyGridView mGridView;
+
     @Bind(R.id.hot_view)
     LinearLayout hotView;
     private RecyclerView cityRecyclerView;
-
-    private RelativeLayout first;
-    private LinearLayout second;
-    private RecyclerView hotCityRecyclerView;
     private List<City> cityList;
     private List<String> hotCity;
     private CityRecyclerViewAdapter mAdapter;
-    private SharedPreferences mPrefs;
-    //    private HotCityAdapter hotCityAdapter;
     private ChooseCityContract.Presenter chooseCityPresenter;
     private RxBus _rxBus;
-    private FragmentManager fm;
-    private CompositeSubscription subscription;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -98,8 +84,8 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
         editCity=(CityEditText) view.findViewById(R.id.edit_city);
         cityRecyclerView=(RecyclerView) view.findViewById(R.id.city_list);
         hotCity = new ArrayList<>();
-        initData();
-        MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(mActivity, hotCity);
+        MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(mActivity);
+        myGridViewAdapter.initData();
         mGridView.setAdapter(myGridViewAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -123,18 +109,11 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
             public void onItemClick(View view, int position) {
 
                 City city = cityList.get(position);
-                try{
                     if (_rxBus.hasObservers()) {
                         _rxBus.send(new CityEvent(city.getDistrict()));
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
                 mActivity.startActivity(new Intent(mActivity, WeatherDetailActivity.class));
                 mActivity.finish();
-
-
             }
         });
         ButterKnife.bind(this, view);
@@ -148,9 +127,6 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
         cityList.clear();
         cityList.addAll(cities);
         mAdapter.notifyDataSetChanged();
-//        for (City city : cities) {
-//            cityList.add(city);
-//        }
     }
 
     @Override
@@ -178,63 +154,7 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
     }
 
 
-    private class MyGridViewAdapter extends BaseAdapter {
-        private LayoutInflater inflater;
-        private List<String > list;
-        @Override
-        public int getCount() {
-            return hotCity.size();
-        }
 
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        public MyGridViewAdapter(Context ct, List<String> list) {
-            this.list=list;
-            inflater = LayoutInflater.from(ct);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder = null;
-            if (convertView == null) {
-                holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.item_hot_city, parent,false);
-                holder.id_tv_cityname = (TextView) convertView.findViewById(R.id.hot_city);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            holder.id_tv_cityname.setText(list.get(position));
-            return convertView;
-        }
-
-        class ViewHolder {
-            TextView id_tv_cityname;
-        }
-    }
-
-
-    public void initData() {
-        hotCity.add("北京");
-        hotCity.add("上海");
-        hotCity.add("广州");
-        hotCity.add("深圳");
-        hotCity.add("南京");
-        hotCity.add("杭州");
-        hotCity.add("西安");
-        hotCity.add("海口");
-        hotCity.add("三亚");
-
-    }
 
     @Override
     public void onDestroyView() {

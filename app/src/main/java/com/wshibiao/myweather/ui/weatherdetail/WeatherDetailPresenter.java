@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.wshibiao.myweather.base.BaseActivity;
+import com.wshibiao.myweather.data.bean.Forecast3thWeather;
 import com.wshibiao.myweather.data.bean.WeatherInfo;
 import com.wshibiao.myweather.data.local.cache.ACache;
 import com.wshibiao.myweather.data.remote.NetWork;
@@ -22,8 +23,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by wsb on 2016/5/1.
  */
-public class
-        WeatherDetailPresenter implements WeatherDetailContract.Presenter,AMapLocationListener {
+public class WeatherDetailPresenter implements WeatherDetailContract.Presenter,AMapLocationListener {
     private static final String TAG = "WeatherDetailPresenter";
     private WeatherDetailContract.View mView;
     private static final String KEY = "6d660d7c817e5b57ab0afd636d336f3b";
@@ -60,10 +60,33 @@ public class
                 Log.d(TAG, "onNext: weather" + weatherInfo.result.sk.windDirection);
                 aCache.put("weather_temp", weatherInfo, Integer.parseInt(preferences.getString("update_frequency", "180")) * 60 * 1000);
                 mView.showWeather(weatherInfo);
+                mView.show7Day(weatherInfo);
             }
         };
     }
 
+    //今日小时天气
+    @Override
+    public void getForecast3h(String cityName){
+        NetWork.getWeatherApi().getWeatherForecast3h(cityName, KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Forecast3thWeather>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: forecast3th",e );
+                    }
+
+                    @Override
+                    public void onNext(Forecast3thWeather forecast3thWeather) {
+                        mView.showForecast3th(forecast3thWeather);
+                    }
+                });
+  }
 
 
     @Override
@@ -115,6 +138,7 @@ public class
                             @Override
                             public void onError(Throwable e) {
                                 Log.d(TAG, "onError: location" + e.toString());
+                                mView.errorLocSnackbar();
                             }
 
                             @Override
@@ -128,8 +152,9 @@ public class
                             }
                         });
                 Log.d(TAG, "onLocationChanged: location"+aMapLocation.getLongitude());
-            }else {
-                Log.e(TAG, "onLocationChanged:ErrorCode "+aMapLocation.getErrorCode());
+            }else{
+                Log.e(TAG, "onLocationChanged:ErrorCode " + aMapLocation.getErrorCode());
+                mView.errorNetSnackbar();
             }
         }
     }

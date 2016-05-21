@@ -40,6 +40,4 @@ public class NetWork {
         return weatherApi;
     }
 
-
-
 }

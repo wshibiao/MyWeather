@@ -1,4 +1,4 @@
-package com.wshibiao.myweather.customview;
+package com.wshibiao.myweather.widget;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

@@ -15,10 +15,13 @@ public class WeatherIcon {
             R.drawable.d15, R.drawable.d16, R.drawable.d17, R.drawable.d18, R.drawable.d19,
             R.drawable.d20, R.drawable.d21, R.drawable.d22, R.drawable.d23, R.drawable.d24,
             R.drawable.d25, R.drawable.d26, R.drawable.d27, R.drawable.d28, R.drawable.d29,
-            R.drawable.d30, R.drawable.d31, R.drawable.d53};
+            R.drawable.d30, R.drawable.d31, R.drawable.d32};
 
 
     public static int weatherIcon(String fa){
+        if (fa.equals("53")){
+            return mImgID[32];
+        }
        return  mImgID[Integer.parseInt(fa)];
     }
 }

@@ -56,7 +56,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_dialog_email" />
+        app:layout_behavior="com.wshibiao.myweather.widget.ScrollAwareFABBehavior"
+        app:backgroundTint="@color/colorAccent"
+        android:src="@drawable/ic_add_24dp" />
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

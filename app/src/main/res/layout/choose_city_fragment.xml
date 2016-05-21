@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <com.wshibiao.myweather.customview.CityEditText
+    <com.wshibiao.myweather.widget.CityEditText
         android:id="@+id/edit_city"
         android:background="@android:drawable/edit_text"
         android:layout_width="match_parent"
