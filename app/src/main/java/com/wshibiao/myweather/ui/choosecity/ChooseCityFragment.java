@@ -1,6 +1,7 @@
 package com.wshibiao.myweather.ui.choosecity;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.wshibiao.myweather.R;
 import com.wshibiao.myweather.base.BaseActivity;
@@ -28,18 +29,18 @@ import com.wshibiao.myweather.widget.CityEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
  * Created by wsb on 2016/4/26.
  */
 public class ChooseCityFragment extends BaseFragment implements ChooseCityContract.View {
-    //    @Bind(R.id.edit_city)
-    private CityEditText editCity;
 
-    @Bind(R.id.hot_view)
-    LinearLayout hotView;
+    private CityEditText editCity;
+//    @Bind(R.id.hot_view)
+//    LinearLayout hotView;
+    private TextView tv_hot;
+    private GridView mGridView;
     private RecyclerView cityRecyclerView;
     private List<City> cityList;
     private List<String> hotCity;
@@ -47,6 +48,10 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
     private ChooseCityContract.Presenter chooseCityPresenter;
     private RxBus _rxBus;
 
+    public static ChooseCityFragment newInstance() {
+        return new ChooseCityFragment();
+
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -58,10 +63,7 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
     }
 
 
-    public static ChooseCityFragment newInstance() {
-        return new ChooseCityFragment();
 
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,25 +82,31 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.choose_city_fragment, container, false);
-        final GridView mGridView=(GridView)view. findViewById(R.id.gv_remen);
+        mGridView=(GridView)view. findViewById(R.id.gv_remen);
+        tv_hot=(TextView) view.findViewById(R.id.tv_remen);
         editCity=(CityEditText) view.findViewById(R.id.edit_city);
         cityRecyclerView=(RecyclerView) view.findViewById(R.id.city_list);
-        hotCity = new ArrayList<>();
-        MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(mActivity);
-        myGridViewAdapter.initData();
+        initData();
+        initGirdView();
+        chooseCityPresenter.searchCity();
+        chooseCityPresenter.start();
+        initRecyclerView();
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+
+    public void initGirdView(){
+        MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(mActivity,hotCity);
         mGridView.setAdapter(myGridViewAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (_rxBus.hasObservers()) {
-                    _rxBus.send(new CityEvent(hotCity.get(position)));
-                }
-                mActivity.startActivity(new Intent(mActivity, WeatherDetailActivity.class));
-                mActivity.finish();
+                toActivity(hotCity.get(position));
             }
         });
-        chooseCityPresenter.searchCity();
-        listenToSearchInput();
+    }
+    public void initRecyclerView(){
         cityList = new ArrayList<>();
         cityRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cityRecyclerView.setHasFixedSize(true);
@@ -109,18 +117,19 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
             public void onItemClick(View view, int position) {
 
                 City city = cityList.get(position);
-                    if (_rxBus.hasObservers()) {
-                        _rxBus.send(new CityEvent(city.getDistrict()));
-                    }
-                mActivity.startActivity(new Intent(mActivity, WeatherDetailActivity.class));
-                mActivity.finish();
+                toActivity(city.getDistrict());
             }
         });
-        ButterKnife.bind(this, view);
-        return view;
     }
 
-
+    @Override
+    public void toActivity(String cityName){
+        if (_rxBus.hasObservers()) {
+            _rxBus.send(new CityEvent(cityName));
+        }
+        mActivity.startActivity(new Intent(mActivity, WeatherDetailActivity.class),ActivityOptions.makeSceneTransitionAnimation(mActivity).toBundle());
+        mActivity.finish();
+    }
 
     @Override
     public void showCity(List<City> cities) {
@@ -134,7 +143,14 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
         Snackbar.make(editCity, "没有该城市天气数据", Snackbar.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void hideHotCity() {
+        mGridView.setVisibility(View.GONE);
+        tv_hot.setVisibility(View.GONE);
+    }
 
+    //监听输入
+    @Override
     public void listenToSearchInput() {
         editCity.addTextChangedListener(new TextWatcher() {
             @Override
@@ -148,13 +164,10 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
             @Override
             public void afterTextChanged(Editable s) {
                 chooseCityPresenter.onEditChanged(s.toString());
-                hotView.setVisibility(View.GONE);
+//                hotView.setVisibility(View.GONE);
             }
         });
     }
-
-
-
 
     @Override
     public void onDestroyView() {
@@ -165,9 +178,22 @@ public class ChooseCityFragment extends BaseFragment implements ChooseCityContra
     @Override
     public void onResume() {
         super.onResume();
-        chooseCityPresenter.searchCity();
+        chooseCityPresenter.start();
     }
 
+    private void initData() {
+        hotCity = new ArrayList<>();
+        hotCity.add("北京");
+        hotCity.add("上海");
+        hotCity.add("广州");
+        hotCity.add("深圳");
+        hotCity.add("南京");
+        hotCity.add("杭州");
+        hotCity.add("西安");
+        hotCity.add("海口");
+        hotCity.add("三亚");
+
+    }
     public static class CityEvent {
         public String msg;
         public CityEvent(String msg) {

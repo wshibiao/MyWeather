@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">一直在测试1.0</string>
     <!--weather-->
+    <string name="toolbar_title">选择城市</string>
     <string name="default_text">__</string>
     <string name="today">今天</string>
     <string name="pm">PM2.5</string>

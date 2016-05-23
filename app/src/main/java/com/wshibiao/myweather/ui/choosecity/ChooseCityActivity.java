@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * Created by wsb on 2016/4/26.
  */
 public class ChooseCityActivity extends BaseActivity {
-    @Bind(R.id.toolbar)
+    @Bind(R.id.city_toolbar)
     Toolbar toolbar;
     @Bind(R.id.frame_city)
     FrameLayout frame;
@@ -46,31 +46,37 @@ public class ChooseCityActivity extends BaseActivity {
         }
 
         presenter=new ChooseCityPresenter(chooseCityFragment);
+        toolbar.setTitle(" ");
 
-
-        toolbar.setTitle("选择城市");
-        toolbar.setTitleTextColor(Color.BLUE);
-        toolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_left_32dpdp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         setSupportActionBar(toolbar);
         ActionBar ab=getSupportActionBar();
-
         ab.setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setTitleTextColor(Color.BLUE);
+        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         getWindow().setEnterTransition(new Explode());
         getWindow().setExitTransition(new Explode());
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     @Override

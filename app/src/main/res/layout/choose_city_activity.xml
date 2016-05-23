@@ -9,11 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/city_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:clickable="true"
             android:popupTheme="@style/Theme.AppCompat.Light"
-            android:theme="@style/Theme.Design.NoActionBar"/>
+            android:theme="@style/Theme.Design.NoActionBar">
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/toolbar_title"
+                android:textSize="24sp"
+                android:textColor="@color/cardview_dark_background"
+                />
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
    <android.support.design.widget.CoordinatorLayout

@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
@@ -77,7 +78,7 @@ public class WeatherDetailActivity extends BaseActivity
         Log.d(TAG, "WeatherActivity onCreate: " + getExternalCacheDir() + "/ACache");
         Glide.with(this).load(R.drawable.sun0);
         collapsingToolbarLayout.setTitle(" ");
-        coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.sun3));
+        coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.bg_fine_night));
         Log.d(TAG, "onCreate: " + System.currentTimeMillis());
         Observable.timer(3000, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
             @Override
@@ -132,7 +133,7 @@ public class WeatherDetailActivity extends BaseActivity
 
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.city_day);
+                R.drawable.sun3);
         // 创建Palette对象
         Palette.generateAsync(bitmap,
                 new Palette.PaletteAsyncListener() {
@@ -149,8 +150,8 @@ public class WeatherDetailActivity extends BaseActivity
                     }
                 });
 
-        getWindow().setEnterTransition(new Slide());
-        getWindow().setExitTransition(new Slide());
+        getWindow().setEnterTransition(new Explode());
+        getWindow().setExitTransition(new Explode());
 
     }
 
@@ -176,16 +177,16 @@ public class WeatherDetailActivity extends BaseActivity
                     }
                 }));
 
-        Observable<Object> replaceBackground=_rxBus.toObserverable().share();
-        _subscriptions.add(replaceBackground.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        if (o instanceof WeatherDetailFragment.ReplaceBg) {
-                            coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.rain_day));
-                        }
-                    }
-                }));
+//        Observable<Object> replaceBackground=_rxBus.toObserverable().share();
+//        _subscriptions.add(replaceBackground.observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<Object>() {
+//                    @Override
+//                    public void call(Object o) {
+//                        if (o instanceof WeatherDetailFragment.ReplaceBg) {
+//                            coordinatorLayout.setBackground(getResources().getDrawable(R.drawable.rain_day));
+//                        }
+//                    }
+//                }));
 
     }
 

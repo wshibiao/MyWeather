@@ -7,8 +7,6 @@ import com.wshibiao.myweather.data.bean.City;
 
 import java.util.List;
 
-import rx.Subscription;
-
 /**
  * Created by wsb on 2016/4/26.
  */
@@ -16,11 +14,14 @@ import rx.Subscription;
     interface View extends BaseView<Presenter> {
         void showNoCity();
         void showCity(List<City> cities);
+        void listenToSearchInput();
+        void toActivity(String cityName);
+        void hideHotCity();
 
     }
 
     interface Presenter extends BasePresenter {
-        Subscription searchCity() ;
+        void searchCity() ;
         void onEditChanged(String s);
 
     }

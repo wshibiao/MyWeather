@@ -42,7 +42,7 @@ public class WeatherDetailPresenter implements WeatherDetailContract.Presenter,A
 
     //创建并返回Observer对象
 
-    public  Observer<WeatherInfo> setUpObserver(){
+    private   Observer<WeatherInfo> setUpObserver(){
         return new Observer<WeatherInfo>() {
             @Override
             public void onCompleted() {

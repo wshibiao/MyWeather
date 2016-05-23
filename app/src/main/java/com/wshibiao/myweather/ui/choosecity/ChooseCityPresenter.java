@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -25,17 +24,15 @@ public class ChooseCityPresenter implements ChooseCityContract.Presenter {
     private PublishSubject<String> mSearchResultsSubject ;
     private ChooseCityContract.View mView;
     private CityDBSource db= CityDBSource.getInstance(BaseApplication.getContext());
-
     public ChooseCityPresenter(ChooseCityContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
     }
 
     @Override
-    public Subscription searchCity() {
-
+    public void searchCity() {
         mSearchResultsSubject = PublishSubject.create();
-        return mSearchResultsSubject
+        mSearchResultsSubject
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<String, List<City>>() {
@@ -66,15 +63,14 @@ public class ChooseCityPresenter implements ChooseCityContract.Presenter {
                 });
             }
 
-
-
     @Override
     public void onEditChanged(String s){
         mSearchResultsSubject.onNext(s);
+        mView.hideHotCity();
     }
 
     @Override
     public void start() {
-
+        mView.listenToSearchInput();
     }
 }

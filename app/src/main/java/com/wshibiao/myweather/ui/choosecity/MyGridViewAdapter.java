@@ -33,9 +33,9 @@ public class MyGridViewAdapter  extends BaseAdapter {
         return 0;
     }
 
-    public MyGridViewAdapter(Context ct) {
+    public MyGridViewAdapter(Context ct,List<String> list) {
         inflater = LayoutInflater.from(ct);
-        list=new ArrayList<>();
+        this.list=(list!=null?list:new ArrayList<String>());
     }
 
     @Override
@@ -58,16 +58,4 @@ public class MyGridViewAdapter  extends BaseAdapter {
         TextView id_tv_cityname;
     }
 
-    public void initData() {
-        list.add("北京");
-        list.add("上海");
-        list.add("广州");
-        list.add("深圳");
-        list.add("南京");
-        list.add("杭州");
-        list.add("西安");
-        list.add("海口");
-        list.add("三亚");
-
-    }
 }

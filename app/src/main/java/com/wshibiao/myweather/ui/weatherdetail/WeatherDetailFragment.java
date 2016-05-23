@@ -53,7 +53,6 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
     TextView today;
     @Bind(R.id.temp_range)
     TextView tempRange;
-
     @Bind(R.id.tv_felt_air_temp)
     TextView tvFeltAirTemp;
     @Bind(R.id.tv_humidity)
@@ -84,22 +83,24 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
     LinearLayout forecast7;
     @Bind(R.id.my_refresh)
     SwipeRefreshLayout refresh;
-
-
-
-
     private WeatherDetailContract.Presenter presenter;
     private RxBus _rxBus;
     private WeatherInfo weather = new WeatherInfo();
 
     public static WeatherDetailFragment newInstance() {
         WeatherDetailFragment fragment = new WeatherDetailFragment();
-
         return fragment;
     }
 
     public WeatherDetailFragment() {
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
+        _rxBus = ((BaseActivity) mActivity).getRxBusSingleton();
     }
 
     @Nullable
@@ -130,14 +131,6 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
 
 
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mActivity = (Activity) context;
-        _rxBus = ((BaseActivity) mActivity).getRxBusSingleton();
-    }
-
 
     /**
      * 后台定时更新任务，以及选择城市事件的观察者， 将它们添加进CompositeSubscription后，保证在fragment生命周期结束后结束订阅
@@ -225,6 +218,8 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
             }
         });
     }
+
+
     public synchronized void handleTodayWeatherResponse(WeatherInfo weather) {
         BaseActivity.settings.setCity(weather.result.today.city);
         Log.d("onBindViewHolder", weather.result.sk.temp + "hahah");
@@ -266,11 +261,9 @@ public class WeatherDetailFragment extends BaseFragment implements WeatherDetail
 
     @Override
     public void showWeather(WeatherInfo weatherInfo) {
-
         Log.d(TAG, "showWeather: ");
         handleTodayWeatherResponse(weatherInfo);
         weather.result = weatherInfo.result;
-
 
     }
     /**
